@@ -10,5 +10,7 @@ main = do
   b <- M.createNewMatrix n
   let c = Mul.binet a b
   let d = Mul.standard a b
+  let e = Mul.strassen a b
   print c
   print d
+  print e
