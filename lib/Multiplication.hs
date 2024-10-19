@@ -2,7 +2,7 @@
 
 module Multiplication (Multiplication (..)) where
 
-import Data.Matrix (Matrix, elementwise, multStd)
+import Data.Matrix (Matrix, elementwise, multStd, ncols)
 import qualified MatrixShared as M
 
 class Multiplication t where
@@ -14,7 +14,10 @@ instance Multiplication Double where
   standard = multStd
 
 multBinet :: (Num t) => Matrix t -> Matrix t -> Matrix t
-multBinet a b
+multBinet a b = M.toOriginalSize (multBinetRec a b) n n where n = ncols a
+
+multBinetRec :: (Num t) => Matrix t -> Matrix t -> Matrix t
+multBinetRec a b
   | M.isOneElement a && M.isOneElement b = elementwise (*) a b
   | otherwise = M.joinBlocks c11 c12 c21 c22
   where

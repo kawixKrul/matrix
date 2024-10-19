@@ -1,6 +1,6 @@
-module MatrixShared (createNewMatrix, joinBlocks, isOneElement, splitMatrixCenter) where
+module MatrixShared (createNewMatrix, joinBlocks, isOneElement, splitMatrixCenter, toOriginalSize) where
 
-import Data.Matrix (Matrix, fromList, ncols, nrows, splitBlocks, (<->), (<|>))
+import Data.Matrix (Matrix, extendTo, fromList, ncols, nrows, splitBlocks, submatrix, (<->), (<|>))
 import System.Random (randomRIO)
 
 generateRandomDouble :: IO Double
@@ -23,6 +23,24 @@ isOneElement a = ncols a == 1 && nrows a == 1
 splitMatrixCenter :: (Num a) => Matrix a -> (Matrix a, Matrix a, Matrix a, Matrix a)
 splitMatrixCenter a = (a11, a12, a21, a22)
   where
-    n = ncols a `div` 2
-    m = nrows a `div` 2
-    (a11, a12, a21, a22) = splitBlocks m n a
+    cols = ncols a
+    rows = nrows a
+
+    paddedA = padMatrixWithZeros a rows cols
+    n = ncols paddedA `div` 2
+    m = nrows paddedA `div` 2
+
+    (a11, a12, a21, a22) = splitBlocks m n paddedA
+
+extendZeros :: (Num t) => Int -> Int -> Matrix t -> Matrix t
+extendZeros = extendTo 0
+
+padMatrixWithZeros :: (Num t) => Matrix t -> Int -> Int -> Matrix t
+padMatrixWithZeros a rows cols
+  | odd rows && odd cols = extendZeros (rows + 1) (cols + 1) a
+  | odd rows = extendZeros (rows + 1) cols a
+  | odd cols = extendZeros rows (cols + 1) a
+  | otherwise = a
+
+toOriginalSize :: (Num t) => Matrix t -> Int -> Int -> Matrix t
+toOriginalSize a rows cols = submatrix 1 rows 1 cols a
