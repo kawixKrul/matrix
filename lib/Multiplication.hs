@@ -14,17 +14,18 @@ instance Multiplication Double where
   standard = multStd
 
 multBinet :: (Num t) => Matrix t -> Matrix t -> Matrix t
-multBinet a b = M.toOriginalSize (multBinetRec a b) n n where n = ncols a
+multBinet a b = M.toOriginalSize (multBinetRec a b) n where n = ncols a
 
 multBinetRec :: (Num t) => Matrix t -> Matrix t -> Matrix t
 multBinetRec a b
   | M.isOneElement a && M.isOneElement b = elementwise (*) a b
-  | otherwise = M.joinBlocks c11 c12 c21 c22
+  | otherwise =
+      M.joinBlocks
+        (getCxxMatrix a11 a12 b11 b21)
+        (getCxxMatrix a11 a12 b12 b22)
+        (getCxxMatrix a21 a22 b11 b21)
+        (getCxxMatrix a21 a22 b12 b22)
   where
     (a11, a12, a21, a22) = M.splitMatrixCenter a
     (b11, b12, b21, b22) = M.splitMatrixCenter b
-
-    c11 = elementwise (+) (multBinet a11 b11) (multBinet a12 b21)
-    c12 = elementwise (+) (multBinet a11 b12) (multBinet a12 b22)
-    c21 = elementwise (+) (multBinet a21 b11) (multBinet a22 b21)
-    c22 = elementwise (+) (multBinet a21 b12) (multBinet a22 b22)
+    getCxxMatrix x y w z = elementwise (+) (multBinet x w) (multBinet y z)

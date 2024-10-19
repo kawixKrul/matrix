@@ -9,10 +9,10 @@ generateRandomDouble = randomRIO (0.00000001, 1.0)
 generateRandomList :: Int -> IO [Double]
 generateRandomList n = mapM (\_ -> generateRandomDouble) [1 .. n]
 
-createNewMatrix :: Int -> Int -> IO (Matrix Double)
-createNewMatrix rows cols = do
-  values <- generateRandomList (rows * cols)
-  return $ fromList rows cols values
+createNewMatrix :: Int -> IO (Matrix Double)
+createNewMatrix n = do
+  values <- generateRandomList (n * n)
+  return $ fromList n n values
 
 joinBlocks :: (Num a) => Matrix a -> Matrix a -> Matrix a -> Matrix a -> Matrix a
 joinBlocks a b c d = (a <|> b) <-> (c <|> d)
@@ -42,5 +42,5 @@ padMatrixWithZeros a rows cols
   | odd cols = extendZeros rows (cols + 1) a
   | otherwise = a
 
-toOriginalSize :: (Num t) => Matrix t -> Int -> Int -> Matrix t
-toOriginalSize a rows cols = submatrix 1 rows 1 cols a
+toOriginalSize :: (Num t) => Matrix t -> Int -> Matrix t
+toOriginalSize a n = submatrix 1 n 1 n a
