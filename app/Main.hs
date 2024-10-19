@@ -5,7 +5,7 @@ import qualified Multiplication as Mul
 
 main :: IO ()
 main = do
-  let n = 8
+  let n = 7
   a <- M.createNewMatrix n
   b <- M.createNewMatrix n
   let c = Mul.binet a b
