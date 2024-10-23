@@ -1,6 +1,6 @@
 {-# LANGUAGE ConstrainedClassMethods #-}
 
-module Multiplication (Multiplication (..), MultResult) where
+module Multiplication (Multiplication (..), MultResult (..)) where
 
 import Data.Matrix (Matrix, elementwise, multStd, ncols)
 import qualified MatrixShared as M

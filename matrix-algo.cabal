@@ -59,7 +59,7 @@ library
     import:           warnings
 
     -- Modules exported by the library.
-    exposed-modules:  MatrixShared, Multiplication
+    exposed-modules:  MatrixShared, Multiplication, Utils, Plotting
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -68,7 +68,16 @@ library
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.20.0.0, matrix, random
+    build-depends:    
+        base ^>=4.20.0.0, 
+        matrix, 
+        random, 
+        time,
+        deepseq, 
+        csv, 
+        easyplot, 
+        either
+        
 
     -- Directories containing source files.
     hs-source-dirs:   lib
