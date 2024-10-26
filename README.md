@@ -24,3 +24,6 @@ cabal build
 cabal run
 4. Alternatively, if there are test files, you can run:
 cabal test
+
+## Dependenices
+ - gnuplot
