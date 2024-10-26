@@ -1,20 +1,34 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Plotting (readMatrixData) where
+module Plotting (readMatrixData, plotResult) where
 
+import Control.Monad
 import Data.Either.Combinators
 import Data.List
 import Graphics.EasyPlot
 import Text.CSV
 
-readMatrixData fileName fileName2 = do
-  eitherErrorOrCells <- parseCSVFromFile fileName
-  let cells = fromRight' eitherErrorOrCells
-  let ns = map read $ map (\x -> x !! 0) (take (length cells - 1) ((tail . init) cells)) :: [Double]
-  let times = map read $ map (\x -> x !! 1) (take (length cells - 1) ((tail . init) cells)) :: [Double]
-  let timesZipped = zip ns times
-  eitherErrorOrCells2 <- parseCSVFromFile fileName2
-  let cells2 = fromRight' eitherErrorOrCells2
-  let times2 = map read $ map (\x -> x !! 1) (take (length cells2 - 1) ((tail . init) cells2)) :: [Double]
-  let timesZipped2 = zip ns times2
-  plot (PNG "kurwo.png") [Data2D [Title "Binet", Style Lines, Color Blue] [] timesZipped, Data2D [Title "Strassen", Style Lines, Color Red] [] timesZipped2]
+readCsvRow :: Int -> [[String]] -> [Double]
+readCsvRow row cells = map read $ map (\x -> x !! row) $ take (length cells - 1) ((tail . init) cells) :: [Double]
+
+readMatrixData :: [[String]] -> Int -> [(Double, Double)]
+readMatrixData cells row = zip (readCsvRow 0 cells) (readCsvRow row cells)
+
+resultFiles :: [String]
+resultFiles = ["plot_times.png", "plot_adds.png", "plot_muls.png"]
+
+plotResultToFile :: [[(Double, Double)]] -> String -> IO Bool
+plotResultToFile plotData outName = do
+  plot
+    (PNG outName)
+    [ Data2D [Title "Binet", Style Lines, Color Blue] [] (plotData !! 0),
+      Data2D [Title "Strassen", Style Lines, Color Red] [] (plotData !! 1)
+    ]
+
+plotResult :: [String] -> IO ()
+plotResult files = do
+  cells <- mapM (\f -> parseCSVFromFile f >>= return . fromRight') files
+  let extractData row = map (\c -> readMatrixData c row) cells
+  let plotData = map (\x -> extractData x) [1 .. 3]
+  zipWithM_ plotResultToFile plotData resultFiles

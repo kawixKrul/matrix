@@ -11,7 +11,7 @@ generateRandomList n = mapM (\_ -> generateRandomDouble) [1 .. n]
 
 createNewMatrix :: Int -> IO (Matrix Double)
 createNewMatrix n = do
-  values <- generateRandomList (n * n)
+  values <- generateRandomList $ n * n
   return $ fromList n n values
 
 joinBlocks :: (Num a) => Matrix a -> Matrix a -> Matrix a -> Matrix a -> Matrix a

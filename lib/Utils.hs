@@ -19,7 +19,9 @@ measureMultFunc mulFunc funcName = do
 measureMultiplicationTime :: (Matrix Double -> Matrix Double -> MultResult Double) -> String -> Int -> IO ()
 measureMultiplicationTime mulFunc fileName n = do
   matrixA <- createNewMatrix n
+  matrixA `deepseq` return ()
   matrixB <- createNewMatrix n
+  matrixB `deepseq` return ()
   startTime <- getCurrentTime
   let MultResult resultMatrix totalAdds totalMuls = mulFunc matrixA matrixB
   resultMatrix `deepseq` return ()
