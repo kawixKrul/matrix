@@ -16,7 +16,7 @@ readMatrixData :: [[String]] -> Int -> [(Double, Double)]
 readMatrixData cells row = zip (readCsvRow 0 cells) (readCsvRow row cells)
 
 resultFiles :: [String]
-resultFiles = ["plot_times.png", "plot_adds.png", "plot_muls.png"]
+resultFiles = ["plot_times.png", "plot_additions.png", "plot_multiplications.png"]
 
 plotResultToFile :: [[(Double, Double)]] -> String -> IO Bool
 plotResultToFile plotData outName = do
