@@ -2,3 +2,4 @@ dist-newstyle/
 *.png
 *.dat
 *.csv
+.DS_Store
